@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | MyShop</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<section class="hero" style="min-height:240px">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">💌 Get in Touch</div>
+      <h1>Contact Us</h1>
+    </div>
+  </div>
+</section>
+
+<section class="page-section">
+  <div class="container">
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h2>We'd Love to Hear From You</h2>
+        <p>Have a question about an order, product, or just want to say hello? We're here to help!</p>
+
+        <div class="contact-item">
+          <div class="ci-icon">📧</div>
+          <div><h4>Email</h4><p id="c-email"></p></div>
+        </div>
+        <div class="contact-item">
+          <div class="ci-icon">📞</div>
+          <div><h4>Phone</h4><p id="c-phone"></p></div>
+        </div>
+        <div class="contact-item">
+          <div class="ci-icon">🕐</div>
+          <div><h4>Hours</h4><p>Monday – Saturday, 9am – 7pm</p></div>
+        </div>
+      </div>
+
+      <div class="contact-form">
+        <h3>Send Us a Message</h3>
+        <div id="contact-success" style="display:none;text-align:center;padding:20px">
+          <div style="font-size:48px;margin-bottom:12px">✅</div>
+          <h3 style="color:#22c55e">Message Sent!</h3>
+          <p style="color:var(--grey);margin-top:8px">We'll get back to you soon.</p>
+        </div>
+        <form id="contact-form" style="" onsubmit="submitContact(event)">
+          <div class="form-row"><label>Your Name</label><input required placeholder="Ravi Kumar"></div>
+          <div class="form-row"><label>Email</label><input required type="email" placeholder="ravi@email.com"></div>
+          <div class="form-row"><label>Subject</label>
+            <select>
+              <option>Order Enquiry</option>
+              <option>Product Question</option>
+              <option>Return / Refund</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-row"><label>Message</label><textarea required rows="5" placeholder="Your message…"></textarea></div>
+          <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Send Message →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/store.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/components.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const s = await Store.getSettings();
+  document.getElementById('c-email').textContent = s.contactEmail;
+  document.getElementById('c-phone').textContent = s.contactPhone;
+});
+
+function submitContact(e) {
+  e.preventDefault();
+  document.getElementById('contact-form').style.display = 'none';
+  document.getElementById('contact-success').style.display = '';
+  Toast.show('Message sent! We\'ll respond soon. 📧');
+}
+</script>
+</body>
+</html>

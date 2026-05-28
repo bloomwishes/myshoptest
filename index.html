@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyShop | Home</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ── Hero ─────────────────────────────────────────── -->
+<section class="hero" id="hero-section">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">✨ New Arrivals Just Dropped</div>
+      <h1 id="hero-title">Shop the<br><em>Latest Trends</em></h1>
+      <p id="hero-subtitle">Free shipping on orders over ₹500</p>
+      <div class="hero-btns">
+        <a href="products.html" class="btn btn-primary" id="hero-btn">Shop Now →</a>
+        <a href="about.html"    class="btn btn-outline">Our Story</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Categories ───────────────────────────────────── -->
+<div class="categories">
+  <div class="container">
+    <div class="cat-row" id="cat-row">
+      <button class="cat-pill active" onclick="filterCat('all', this)">All Products</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Featured Products ────────────────────────────── -->
+<section class="page-section">
+  <div class="container">
+    <div class="section-title">
+      <h2>Featured Products</h2>
+      <p>Hand-picked selections just for you</p>
+      <div class="title-rule"></div>
+    </div>
+    <div class="product-grid" id="product-grid"></div>
+    <div class="text-center mt-24">
+      <a href="products.html" class="btn btn-dark">View All Products →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Features Strip ───────────────────────────────── -->
+<section class="features-strip page-section tight">
+  <div class="container">
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-icon">🚚</div>
+        <h4>Free Delivery</h4>
+        <p>On orders above ₹500</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔄</div>
+        <h4>Easy Returns</h4>
+        <p>7-day hassle-free returns</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔒</div>
+        <h4>Secure Payments</h4>
+        <p>100% secure checkout</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">💬</div>
+        <h4>24/7 Support</h4>
+        <p>We're always here to help</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── About Teaser ──────────────────────────────────── -->
+<section class="about-section page-section">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text">
+        <h2 id="about-title-home">About Our Store</h2>
+        <p id="about-text-home"></p>
+        <a href="about.html" class="btn btn-dark">Learn More →</a>
+      </div>
+      <div class="about-img">🏪</div>
+    </div>
+  </div>
+</section>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="js/store.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/components.js"></script>
+<script>
+let _allProducts = [];
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const s = await Store.getSettings();
+
+  // Hero
+  document.getElementById('hero-title').innerHTML      = s.heroTitle.replace(/\n/g,'<br>');
+  document.getElementById('hero-subtitle').textContent = s.heroSubtitle;
+  document.getElementById('hero-btn').textContent      = s.heroBtn + ' →';
+
+  // About teaser
+  document.getElementById('about-title-home').textContent = s.aboutTitle;
+  document.getElementById('about-text-home').textContent  = s.aboutText;
+
+  // Load products
+  _allProducts = await Store.getProducts();
+  const cats = [...new Set(_allProducts.map(p => p.category).filter(Boolean))];
+  const catRow = document.getElementById('cat-row');
+  cats.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-pill';
+    btn.textContent = cat;
+    btn.onclick = function() { filterCat(cat, this); };
+    catRow.appendChild(btn);
+  });
+
+  renderProducts(_allProducts.filter(p => p.featured).slice(0, 8));
+});
+
+function renderProducts(products) {
+  const s  = Store.getSettingsSync();
+  const el = document.getElementById('product-grid');
+  if (!products.length) {
+    el.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="icon">📦</div><h3>No products yet</h3><p>Add products in the admin panel.</p></div>`;
+    return;
+  }
+  el.innerHTML = products.map(p => {
+    const discount = p.originalPrice ? Math.round((1 - p.price/p.originalPrice)*100) : 0;
+    const imgHtml  = p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div class="product-placeholder">🛍️</div>`;
+    return `
+    <div class="product-card ${p.inStock?'':'out-of-stock'}" onclick="location.href='product.html?id=${p.id}'">
+      <div class="product-img">
+        ${imgHtml}
+        ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}
+      </div>
+      <div class="product-body">
+        <div class="product-cat">${p.category||''}</div>
+        <div class="product-name">${p.name}</div>
+        <div class="product-price">
+          <span class="price-current">${s.currency}${p.price.toLocaleString()}</span>
+          ${p.originalPrice ? `<span class="price-original">${s.currency}${p.originalPrice.toLocaleString()}</span>` : ''}
+          ${discount >= 5 ? `<span class="price-discount">${discount}% off</span>` : ''}
+        </div>
+      </div>
+      <div class="product-footer">
+        <button class="btn btn-atc" onclick="event.stopPropagation();addToCart('${p.id}')">🛒 Add to Cart</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterCat(cat, btn) {
+  document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const filtered = cat === 'all' ? _allProducts.filter(p=>p.featured).slice(0,8) : _allProducts.filter(p=>p.category===cat).slice(0,8);
+  renderProducts(filtered);
+}
+</script>
+</body>
+</html>

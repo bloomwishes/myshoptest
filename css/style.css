@@ -884,3 +884,35 @@ footer {
   font-weight: 500;
   border: 1px solid var(--border);
 }
+
+/* ── Checkout Modal ──────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.checkout-modal{background:#fff;border-radius:18px;width:100%;max-width:720px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.18)}
+.cm-head{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid #e8e4dd;position:sticky;top:0;background:#fff;z-index:5}
+.cm-head h2{font-family:'Playfair Display',serif;font-size:20px}
+.cm-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media(max-width:600px){.cm-body{grid-template-columns:1fr}}
+.cm-section{padding:20px 24px}
+.cm-section+.cm-section{border-left:1px solid #e8e4dd}
+@media(max-width:600px){.cm-section+.cm-section{border-left:none;border-top:1px solid #e8e4dd}}
+.cm-section h3{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6c757d;margin-bottom:14px}
+.osi-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid #f5f3ef}
+.osi-row.total{font-weight:700;font-size:15px;border:none;padding-top:10px}
+.promo-row{display:flex;gap:8px;margin-top:14px}
+.cm-apply-btn{padding:9px 16px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;white-space:nowrap}
+.cm-field{margin-bottom:12px}
+.cm-field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin-bottom:5px;color:#555}
+.cm-field input,.cm-field textarea{width:100%;padding:9px 12px;border:1.5px solid #e8e4dd;border-radius:8px;font-size:13px;font-family:inherit;transition:border-color .2s}
+.cm-field input:focus,.cm-field textarea:focus{outline:none;border-color:var(--accent)}
+.cm-field textarea{resize:vertical}
+.cm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:400px){.cm-grid{grid-template-columns:1fr}}
+.place-order-btn{width:100%;padding:14px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;margin-top:12px;font-family:inherit;transition:opacity .2s}
+.place-order-btn:hover{opacity:.88}
+.place-order-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── Toast ───────────────────────────────────────────── */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast{background:#fff;border-left:4px solid #22c55e;padding:12px 18px;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.12);font-size:14px;font-weight:500;min-width:240px}
+.toast.error{border-left-color:#ef4444}

@@ -8,7 +8,6 @@
 </head>
 <body>
 
-<!-- ── Hero ─────────────────────────────────────────── -->
 <section class="hero" id="hero-section">
   <div class="container">
     <div class="hero-content">
@@ -16,14 +15,13 @@
       <h1 id="hero-title">Shop the<br><em>Latest Trends</em></h1>
       <p id="hero-subtitle">Free shipping on orders over ₹500</p>
       <div class="hero-btns">
-        <a href="products.html" class="btn btn-primary" id="hero-btn">Shop Now →</a>
-        <a href="about.html"    class="btn btn-outline">Our Story</a>
+        <a href="products" class="btn btn-primary" id="hero-btn">Shop Now →</a>
+        <a href="about"    class="btn btn-outline">Our Story</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Categories ───────────────────────────────────── -->
 <div class="categories">
   <div class="container">
     <div class="cat-row" id="cat-row">
@@ -32,7 +30,6 @@
   </div>
 </div>
 
-<!-- ── Featured Products ────────────────────────────── -->
 <section class="page-section">
   <div class="container">
     <div class="section-title">
@@ -42,12 +39,11 @@
     </div>
     <div class="product-grid" id="product-grid"></div>
     <div class="text-center mt-24">
-      <a href="products.html" class="btn btn-dark">View All Products →</a>
+      <a href="products" class="btn btn-dark">View All Products →</a>
     </div>
   </div>
 </section>
 
-<!-- ── Features Strip ───────────────────────────────── -->
 <section class="features-strip page-section tight">
   <div class="container">
     <div class="features-grid">
@@ -75,21 +71,19 @@
   </div>
 </section>
 
-<!-- ── About Teaser ──────────────────────────────────── -->
 <section class="about-section page-section">
   <div class="container">
     <div class="about-grid">
       <div class="about-text">
         <h2 id="about-title-home">About Our Store</h2>
         <p id="about-text-home"></p>
-        <a href="about.html" class="btn btn-dark">Learn More →</a>
+        <a href="about" class="btn btn-dark">Learn More →</a>
       </div>
       <div class="about-img">🏪</div>
     </div>
   </div>
 </section>
 
-<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="js/store.js"></script>
@@ -136,7 +130,7 @@ function renderProducts(products) {
     const discount = p.originalPrice ? Math.round((1 - p.price/p.originalPrice)*100) : 0;
     const imgHtml  = p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div class="product-placeholder">🛍️</div>`;
     return `
-    <div class="product-card ${p.inStock?'':'out-of-stock'}" onclick="location.href='product.html?id=${p.id}'">
+    <div class="product-card ${p.inStock?'':'out-of-stock'}" onclick="location.href='product?id=${p.id}'">
       <div class="product-img">
         ${imgHtml}
         ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ''}

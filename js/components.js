@@ -164,3 +164,45 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (e.target===e.currentTarget) Checkout.close();
   });
 });
+
+/* ── Scroll reveal observer ───────────────────────────── */
+function initScrollReveal() {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+  document.querySelectorAll('.page-section, .feature-item, .about-grid, .contact-grid, .product-card').forEach(el => {
+    el.classList.add('reveal');
+    obs.observe(el);
+  });
+}
+
+/* ── Header scroll effect ─────────────────────────────── */
+function initHeaderScroll() {
+  const header = document.querySelector('header');
+  if (!header) return;
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 30);
+  }, { passive: true });
+}
+
+/* ── Clean URLs (remove .html from address bar) ───────── */
+function cleanURL() {
+  const path = location.pathname;
+  if (path.endsWith('.html')) {
+    const clean = path.slice(0, -5) || '/';
+    history.replaceState(null, '', clean + location.search + location.hash);
+  }
+}
+
+/* ── Run on DOMContentLoaded (appended) ──────────────────*/
+document.addEventListener('DOMContentLoaded', () => {
+  cleanURL();
+  setTimeout(() => { initScrollReveal(); initHeaderScroll(); }, 100);
+});
+
+/* ── Mobile menu ─────────────────────────────────────── */
+function toggleMobileMenu() {
+  document.getElementById('main-nav')?.classList.toggle('mobile-open');
+}

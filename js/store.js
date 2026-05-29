@@ -1,5 +1,5 @@
 // ============================================================
-//  MYSHOP — Firebase Cloud Data Layer v2
+//  MYSHOP — Firebase Cloud Data Layer v3
 // ============================================================
 
 const FIREBASE_CONFIG = {
@@ -37,15 +37,17 @@ const DEFAULT_SETTINGS = {
   logo:         "",
   bannerActive: true,
   bannerText:   "🎉 Free shipping on orders above ₹500 — Limited time offer!",
-  // Discount/promo settings
   promoActive:     false,
   promoCode:       "SAVE10",
-  promoType:       "percent",   // "percent" | "flat"
+  promoType:       "percent",
   promoValue:      10,
   promoMin:        0,
   promoLabel:      "10% OFF",
   freeShipMin:     500,
   shippingCharge:  49,
+  // Working hours
+  workingHours: "Monday – Saturday, 9am – 7pm",
+  workingHoursExtra: "",
 };
 
 const DEFAULT_PRODUCTS = [
@@ -109,7 +111,6 @@ const Store = {
     return doc;
   },
   async updateProduct(id, data) {
-    // Remove _createdAt from update data to preserve original
     const { _createdAt, ...updateData } = data;
     await getDB().collection("products").doc(id).update(updateData);
     _productsCache = null;
@@ -152,7 +153,30 @@ const Store = {
     _productsCache = null;
   },
 
-  /* Cart (localStorage — per browser, intentional) */
+  /* Enquiries */
+  async addEnquiry(e) {
+    const id  = uid();
+    const doc = { ...e, id, date: new Date().toISOString(), status: "New", read: false };
+    await getDB().collection("enquiries").doc(id).set(doc);
+    return doc;
+  },
+  async getEnquiries() {
+    try {
+      const snap = await getDB().collection("enquiries").orderBy("date","desc").get();
+      return snap.docs.map(d => ({ ...d.data(), id: d.id }));
+    } catch(e) { console.warn("Enquiries read failed:", e); return []; }
+  },
+  async markEnquiryRead(id) {
+    await getDB().collection("enquiries").doc(id).update({ read: true });
+  },
+  async deleteEnquiry(id) {
+    await getDB().collection("enquiries").doc(id).delete();
+  },
+  async replyEnquiry(id, reply) {
+    await getDB().collection("enquiries").doc(id).update({ reply, repliedAt: new Date().toISOString(), status: "Replied" });
+  },
+
+  /* Cart (localStorage — per browser) */
   getCart()              { return lsGet("myshop_cart", []); },
   addToCart(id, qty=1)   { const c=this.getCart(); const i=c.findIndex(x=>x.id===id); if(i>-1) c[i].qty+=qty; else c.push({id,qty}); lsSave("myshop_cart",c); },
   removeFromCart(id)     { lsSave("myshop_cart", this.getCart().filter(i=>i.id!==id)); },
